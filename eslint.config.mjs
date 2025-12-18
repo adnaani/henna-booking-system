@@ -1,8 +1,14 @@
 // @ts-check
+import { deserialize, serialize } from 'v8';
 import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+if (typeof globalThis.structuredClone !== 'function') {
+  // Provide structuredClone for older Node runtimes (ESLint expects it)
+  globalThis.structuredClone = (value) => deserialize(serialize(value));
+}
 
 export default tseslint.config(
   {
