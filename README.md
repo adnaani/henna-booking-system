@@ -25,9 +25,8 @@ Production-safe backend API for a Henna Booking platform. Built with NestJS, Typ
 ```
 src/
 ├─ config/          # env & database config
-├─ entities/        # TypeORM entities
-├─ modules/         # feature modules
-│  └─ health/       # /health endpoint
+├─ database/        # migrations, CLI datasource, seeds
+├─ modules/         # feature modules (health, user, service, bookings)
 ├─ app.module.ts
 └─ main.ts          # NestJS entrypoint
 ```
@@ -70,6 +69,42 @@ npm run start:prod
 - `docker-compose.yaml` provides Postgres; the API runs on your host (Node 20).
 - The app reads DB connection details from `.env` (host defaults to `127.0.0.1`).
 - Containers run compiled code (`dist/main.js`) when using `npm run start:prod`.
+
+## Database migrations
+
+This project uses **TypeORM migrations only** to manage database schema changes.
+
+- `synchronize` is disabled in all environments
+- Entities define the intended schema
+- Migrations are the source of truth for database structure
+
+### Workflow
+
+When making schema changes:
+
+1. Update `.entity.ts` files
+2. Generate a migration
+
+```
+npm run migration:generate -- src/database/migrations/<MigrationName>
+```
+
+3. Review the generated migration
+4. Run the migration
+
+```
+npm run migration:run
+```
+
+5. Commit both the entity changes and the migration file
+
+### Docker and migrations
+
+- Migrations modify the **database**, not the container
+- Rebuilding Docker images does **not** require re-running migrations
+- Migrations may be run from the host or inside Docker, as long as they target the same database
+
+For local development, migrations are typically run from the host while Postgres runs in Docker.
 
 ## Health check
 - Endpoint: `GET /health`
