@@ -7,6 +7,7 @@ import { envConfig } from './config/env.config';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { ServiceModule } from './modules/service/service.module';
 import { UserModule } from './modules/user/user.module';
+import { AvailabilityModule } from './modules/availability/availability.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './modules/user/user.module';
     BookingsModule,
     ServiceModule,
     UserModule,
+    AvailabilityModule,
   ],
   providers: [],
 })
